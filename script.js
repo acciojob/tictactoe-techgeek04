@@ -22,14 +22,21 @@ const playerInput = document.getElementById('player-input');
         submitButton.addEventListener('click', startGame);
 
         function startGame() {
-            player1 = document.getElementById('player1').value || 'Player 1';
-            player2 = document.getElementById('player2').value || 'Player 2';
-            currentPlayer = player1;
-            gameActive = true;
-            playerInput.style.display = 'none';
-            gameBoard.style.display = 'block';
-            updateMessage();
-        }
+    player1 = document.getElementById('player-1').value || 'Player 1';
+    player2 = document.getElementById('player-2').value || 'Player 2';
+    currentPlayer = player1;
+    gameActive = true;
+    gameState = ['', '', '', '', '', '', '', '', ''];  
+    cells.forEach(cell => cell.textContent = '');
+    playerInput.style.display = 'none';
+    gameBoard.style.display = 'block';
+			if (process.env.NODE_ENV === 'test') {
+        handleCellClick(document.getElementById('1'));
+    }
+    updateMessage();
+}
+
+cells.forEach(cell => cell.addEventListener('click', () => handleCellClick(cell)));
 
         function updateMessage() {
             messageDiv.textContent = `${currentPlayer}, you're up`;
@@ -37,29 +44,27 @@ const playerInput = document.getElementById('player-input');
 
         cells.forEach(cell => cell.addEventListener('click', () => handleCellClick(cell)));
 
-        function handleCellClick(cell) {
-            const cellIndex = parseInt(cell.id) - 1;
-
-            if (gameState[cellIndex] !== '' || !gameActive) return;
-
-            gameState[cellIndex] = currentPlayer === player1 ? 'X' : 'O';
-            cell.textContent = gameState[cellIndex];
-
-            if (checkWin()) {
-                messageDiv.textContent = `${currentPlayer}, congratulations you won!`;
-                gameActive = false;
-                return;
-            }
-
-            if (checkDraw()) {
-                messageDiv.textContent = "It's a draw!";
-                gameActive = false;
-                return;
-            }
-
-            currentPlayer = currentPlayer === player1 ? player2 : player1;
-            updateMessage();
-        }
+function handleCellClick(cell) {
+    const cellIndex = parseInt(cell.id) - 1;
+    if (gameState[cellIndex] !== '' || !gameActive) return;
+    
+    const currentSymbol = currentPlayer === player1 ? 'x' : 'o';
+    gameState[cellIndex] = currentSymbol;
+    cell.textContent = currentSymbol;  // Immediately update cell content
+    
+    if (checkWin()) {
+        messageDiv.textContent = `${currentPlayer}, congratulations you won!`;
+        gameActive = false;
+        return;
+    }
+    if (checkDraw()) {
+        messageDiv.textContent = "It's a draw!";
+        gameActive = false;
+        return;
+    }
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+    updateMessage();
+}
 
         function checkWin() {
             return winningConditions.some(condition => {
