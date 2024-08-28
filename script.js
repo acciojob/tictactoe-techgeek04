@@ -22,8 +22,8 @@ const playerInput = document.getElementById('player-input');
         submitButton.addEventListener('click', startGame);
 
         function startGame() {
-            player1 = document.getElementById('player-1').value || 'Player 1';
-            player2 = document.getElementById('player-2').value || 'Player 2';
+            player1 = document.getElementById('player1').value || 'Player 1';
+            player2 = document.getElementById('player2').value || 'Player 2';
             currentPlayer = player1;
             gameActive = true;
             playerInput.style.display = 'none';
